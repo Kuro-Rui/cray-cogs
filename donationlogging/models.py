@@ -115,10 +115,11 @@ class DonoBank:
             )  # edge case that the bank doesnt exist there.
             banks[self.name].setdefault("roles", {}).update(pairs)
 
-    async def getroles(self, ctx) -> Dict[int, List[discord.Role]]:
+    async def getroles(self, ctx, ids: bool = False) -> Dict[int, List[discord.Role]]:
         banks = await self.manager.config.guild_from_id(self.guild_id).banks()
         data = banks.get(self.name, {})
         roles = data.get("roles", {})
+        if ids: return roles
         return {
             amount: [_role for r in role if (_role := ctx.guild.get_role(int(r)))]
             for amount, role in roles.items()
